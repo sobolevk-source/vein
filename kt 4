@@ -1,1 +1,31 @@
+class User:
+    count = 0
+    
+    def __init__(self, name, login, password, grade):
+        self.name = name
+        self.login = login
+        self.password = password
+        self.grade = grade
+        User.count += 1
+    
+    def show_info(self):
+        print(f'{self.name}, {self.login}, {self.grade}')
+    
+    def __lt__(self, other):
+        return self.grade < other.grade
+    
+    def __eq__(self, other):
+        return self.grade == other.grade
 
+
+class SuperUser(User):
+    count = 0
+    
+    def __init__(self, name, login, password, role, grade):
+        super().__init__(name, login, password, grade)
+        self.role = role
+        SuperUser.count += 1
+        User.count -= 1
+    
+    def show_info(self):
+        print(f'{self.name}, {self.login}, {self.role}, {self.grade}')
