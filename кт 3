@@ -1,0 +1,99 @@
+задание 1
+import csv
+
+def get_books(filename):
+    """
+    Читает данные из CSV файла и возвращает список списков.
+    
+    Args:
+        filename (str): Путь к CSV файлу
+        
+    Returns:
+        list: Список списков с данными книг
+    """
+    books = []
+    
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            csv_reader = csv.reader(file)
+            
+            # Пропускаем заголовок, если он есть (предполагаем, что файл имеет заголовок)
+            header = next(csv_reader, None)
+            
+            # Читаем остальные строки
+            for row in csv_reader:
+                # Конвертируем quantity в int, price в float
+                if len(row) >= 5:
+                    isbn = row[0]
+                    title = row[1]
+                    author = row[2]
+                    quantity = int(row[3])
+                    price = float(row[4])
+                    books.append([isbn, title, author, quantity, price])
+    
+    except FileNotFoundError:
+        print(f"Файл {filename} не найден")
+        return []
+    except Exception as e:
+        print(f"Ошибка при чтении файла: {e}")
+        return []
+    
+    return books
+
+
+
+Задание 2
+def filtered_books(books, search_string):
+    """
+    Фильтрует книги по наличию подстроки в названии.
+    Объединяет title и author в один элемент.
+    
+    Args:
+        books (list): Список книг из get_books()
+        search_string (str): Подстрока для поиска в названии
+        
+    Returns:
+        list: Отфильтрованный список с объединенными title и author
+    """
+    filtered = []
+    search_string_lower = search_string.lower()
+    
+    for book in books:
+        # book: [isbn, title, author, quantity, price]
+        if len(book) >= 5:
+            isbn = book[0]
+            title = book[1]
+            author = book[2]
+            quantity = book[3]
+            price = book[4]
+            
+            # Проверяем наличие подстроки в названии (регистронезависимо)
+            if search_string_lower in title.lower():
+                # Объединяем title и author через запятую и пробел
+                title_author = f"{title}, {author}"
+                filtered.append([isbn, title_author, quantity, price])
+    
+    return filtered
+Задание 3
+def calculate_total_values(books):
+    """
+    Рассчитывает общую стоимость для каждой книги (quantity * price).
+    
+    Args:
+        books (list): Список книг из filtered_books()
+        
+    Returns:
+        list: Список кортежей (isbn, total_value)
+    """
+    result = []
+    
+    for book in books:
+        # book: [isbn, title_author, quantity, price]
+        if len(book) >= 4:
+            isbn = book[0]
+            quantity = book[2]
+            price = book[3]
+            total_value = quantity * price
+            result.append((isbn, total_value))
+    
+    return result
